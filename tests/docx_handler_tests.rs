@@ -1,7 +1,5 @@
-use anyhow::Result;
 use docx_mcp::docx_handler::{DocxHandler, DocxStyle, TableData};
 use tempfile::TempDir;
-use std::path::PathBuf;
 use pretty_assertions::assert_eq;
 use rstest::*;
 use chrono::Utc;

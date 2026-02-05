@@ -7,6 +7,7 @@ use std::path::Path;
 const FONTS_DIR: &str = "assets/fonts";
 
 // Pin sources and expected checksums
+#[allow(dead_code)]
 const LIBERATION_VERSION: &str = "2.1.5";
 const LIBERATION_TAR_URL: &str = "https://github.com/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz";
 const NOTO_BASE_URL: &str = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans";

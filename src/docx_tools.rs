@@ -1214,7 +1214,8 @@ impl DocxToolsProvider {
                 let height = arguments.get("height").and_then(|v| v.as_u64()).map(|v| v as u32);
                 let alt_text = arguments.get("alt_text").and_then(|v| v.as_str()).map(|s| s.to_string());
 
-                let image_data = match base64::decode(data_b64) {
+                use base64::Engine;
+                let image_data = match base64::engine::general_purpose::STANDARD.decode(data_b64) {
                     Ok(bytes) => bytes,
                     Err(e) => return CallToolResponse { content: vec![ToolResponseContent::Text(TextContent { content_type: "text".into(), text: format!("{{\"success\":false,\"error\":\"invalid base64: {}\"}}", e), annotations: None })], is_error: Some(true), meta: None },
                 };
@@ -1539,7 +1540,7 @@ impl DocxToolsProvider {
             },
             
             "analyze_formatting" => {
-                let doc_id = arguments["document_id"].as_str().unwrap_or("");
+                let _doc_id = arguments["document_id"].as_str().unwrap_or("");
                 
                 // For now, return basic analysis - in full implementation would parse DOCX XML
                 ToolOutcome::Metadata { metadata: serde_json::json!({

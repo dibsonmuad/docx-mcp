@@ -2,7 +2,6 @@ use anyhow::Result;
 use docx_mcp::docx_handler::{DocxHandler, DocxStyle, TableData};
 use docx_mcp::pure_converter::PureRustConverter;
 use tempfile::TempDir;
-use std::path::{Path, PathBuf};
 use std::fs;
 use pretty_assertions::assert_eq;
 use rstest::*;
@@ -46,7 +45,7 @@ fn setup_test_handler_with_content() -> (DocxHandler, String, TempDir) {
 
 #[test]
 fn test_pure_converter_creation() {
-    let converter = PureRustConverter::new();
+    let _converter = PureRustConverter::new();
     // Just verify it can be created without panicking
     assert!(true);
 }
@@ -73,7 +72,7 @@ fn test_extract_text_from_docx() -> Result<()> {
 
 #[test]
 fn test_extract_text_empty_document() -> Result<()> {
-    let temp_dir = TempDir::new().unwrap();
+    let _temp_dir = TempDir::new().unwrap();
     let mut handler = DocxHandler::new().unwrap();
     let doc_id = handler.create_document().unwrap();
     
@@ -352,7 +351,7 @@ fn test_large_document_conversion() -> Result<()> {
 
 #[test]
 fn test_text_extraction_accuracy() -> Result<()> {
-    let temp_dir = TempDir::new().unwrap();
+    let _temp_dir = TempDir::new().unwrap();
     let mut handler = DocxHandler::new().unwrap();
     let doc_id = handler.create_document().unwrap();
     

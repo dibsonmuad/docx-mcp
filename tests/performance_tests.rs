@@ -1,5 +1,5 @@
 use anyhow::Result;
-use docx_mcp::docx_handler::{DocxHandler, DocxStyle, TableData};
+use docx_mcp::docx_handler::{DocxHandler, TableData};
 use docx_mcp::pure_converter::PureRustConverter;
 use docx_mcp::docx_tools::DocxToolsProvider;
 use docx_mcp::security::SecurityConfig;
@@ -12,6 +12,7 @@ use std::thread;
 use pretty_assertions::assert_eq;
 
 const PERFORMANCE_TIMEOUT: Duration = Duration::from_secs(30);
+#[allow(dead_code)]
 const STRESS_TEST_ITERATIONS: usize = 100;
 
 #[test]
@@ -518,7 +519,7 @@ fn test_error_handling_performance() -> Result<()> {
     for (operation, args) in error_operations {
         let start = Instant::now();
         
-        let result = tokio_test::block_on(async {
+        let _result = tokio_test::block_on(async {
             provider.call_tool(operation, args).await
         });
         

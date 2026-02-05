@@ -2,9 +2,9 @@ use anyhow::{Context, Result};
 use ::image::{ImageFormat};
 use printpdf::*;
 use dotext::MsDoc;
-use ::lopdf::{dictionary, Object, ObjectId, Document as LoDocument};
+use ::lopdf::Document as LoDocument;
 use std::fs::{self, File};
-use std::io::{BufWriter, Read};
+use std::io::BufWriter;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use tempfile::NamedTempFile;
@@ -127,6 +127,7 @@ impl DocumentConverter {
         }
     }
 
+    #[allow(dead_code)]
     fn basic_docx_to_pdf(&self, docx_path: &Path, pdf_path: &Path) -> Result<()> {
         // Extract text from DOCX (fallback using dotext)
         let mut reader = dotext::Docx::open(docx_path)
@@ -431,7 +432,7 @@ impl DocumentConverter {
         merged.version = "1.5".to_string();
         
         for pdf_path in pdf_paths {
-            let mut doc = LoDocument::load(pdf_path)?;
+            let doc = LoDocument::load(pdf_path)?;
             
             // Merge pages
             for page_id in doc.get_pages().values() {

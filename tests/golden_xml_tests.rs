@@ -2,7 +2,6 @@ use anyhow::Result;
 use docx_mcp::docx_handler::{DocxHandler, ImageData};
 use tempfile::TempDir;
 use std::fs;
-use std::path::PathBuf;
 use zip::ZipArchive;
 
 #[test]

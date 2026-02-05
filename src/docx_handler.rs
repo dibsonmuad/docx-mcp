@@ -477,7 +477,7 @@ impl DocxHandler {
 
         let mut total_replacements = 0usize;
 
-        let mut replace_text = |text: &str| -> (String, usize) {
+        let replace_text = |text: &str| -> (String, usize) {
             let mut count = 0usize;
             let result = re.replace_all(text, |_: &regex::Captures| {
                 count += 1;
@@ -1062,6 +1062,7 @@ enum DocxOp {
     Footer(String),
     Image { data: Vec<u8>, width: u32, height: u32, alt_text: Option<String> },
     Hyperlink { text: String, url: String },
+    #[allow(dead_code)]
     SectionBreak { page_size: Option<String>, orientation: Option<String>, margins: Option<MarginsSpec> },
     Toc { from_level: usize, to_level: usize, right_align_dots: bool },
     BookmarkAfterHeading { heading_text: String, name: String },
