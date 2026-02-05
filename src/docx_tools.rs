@@ -57,7 +57,7 @@ impl DocxToolsProvider {
 }
 
 impl DocxToolsProvider {
-    pub async fn list_tools(&self) -> Vec<Tool> {
+    pub fn list_tools(&self) -> Vec<Tool> {
         let mut all_tools = vec![
             Tool {
                 name: "create_document".to_string(),

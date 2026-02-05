@@ -1,27 +1,12 @@
 use anyhow::Result;
-#[cfg(feature = "runtime-server")]
-use mcp_server::Server;
 use tracing::info;
 use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 use clap::Parser;
 
+// Use library modules
+use docx_mcp::security::{Args, CliCommand, FontsAction, SecurityConfig};
 #[cfg(feature = "runtime-server")]
-mod docx_tools;
-#[cfg(feature = "runtime-server")]
-mod docx_handler;
-#[cfg(feature = "runtime-server")]
-mod converter;
-#[cfg(feature = "runtime-server")]
-mod pure_converter;
-#[cfg(all(feature = "runtime-server", feature = "advanced-docx"))]
-mod advanced_docx;
-mod security;
-
-#[cfg(feature = "embedded-fonts")]
-mod fonts;
-
-#[cfg(feature = "runtime-server")]
-use docx_tools::DocxToolsProvider;
+use docx_mcp::docx_tools::DocxToolsProvider;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -31,19 +16,19 @@ async fn main() -> Result<()> {
         .init();
 
     // Parse command line arguments (which also includes environment variables)
-    let args = security::Args::parse();
+    let args = Args::parse();
 
     // Handle top-level subcommands that should run and exit
     if let Some(cmd) = &args.command {
         match cmd {
-            security::CliCommand::Fonts { action } => {
+            CliCommand::Fonts { action } => {
                 match action {
-                    security::FontsAction::Download => {
+                    FontsAction::Download => {
                         docx_mcp::fonts_cli::download_fonts_blocking()?;
                         info!("Fonts downloaded successfully");
                         return Ok(());
                     }
-                    security::FontsAction::Verify => {
+                    FontsAction::Verify => {
                         docx_mcp::fonts_cli::verify_fonts_blocking()?;
                         info!("Fonts verified successfully");
                         return Ok(());
@@ -67,11 +52,11 @@ async fn main() -> Result<()> {
         use std::future::Future;
         use tokio::io::{stdin, stdout};
 
-        let security_config = security::SecurityConfig::from_args(args);
+        let security_config = SecurityConfig::from_args(args);
         info!("Starting DOCX MCP Server - Security: {}", security_config.get_summary());
 
         #[derive(Clone)]
-        struct DocxRouter(docx_tools::DocxToolsProvider);
+        struct DocxRouter(DocxToolsProvider);
 
         impl Router for DocxRouter {
             fn name(&self) -> String { "docx-mcp-server".to_string() }
@@ -80,10 +65,7 @@ async fn main() -> Result<()> {
                 CapabilitiesBuilder::new().with_tools(true).build()
             }
             fn list_tools(&self) -> Vec<SpecTool> {
-                // DocxToolsProvider::list_tools is async; block briefly with tokio runtime handle
-                let rt = tokio::runtime::Handle::current();
-                let tools = rt.block_on(self.0.list_tools());
-                tools.into_iter().map(|t| SpecTool{ name: t.name, description: t.description.unwrap_or_default(), input_schema: t.input_schema }).collect()
+                self.0.list_tools().into_iter().map(|t| SpecTool{ name: t.name, description: t.description.unwrap_or_default(), input_schema: t.input_schema }).collect()
             }
             fn call_tool(&self, tool_name: &str, arguments: JsonValue) -> Pin<Box<dyn Future<Output = Result<Vec<Content>, mcp_spec::handler::ToolError>> + Send + 'static>> {
                 let provider = self.0.clone();

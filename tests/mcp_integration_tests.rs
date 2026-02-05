@@ -40,7 +40,7 @@ async fn create_test_provider_with_security(config: SecurityConfig) -> (DocxTool
 async fn test_list_tools_default_config() {
     let (provider, _temp_dir) = create_test_provider().await;
     
-    let tools = provider.list_tools().await;
+    let tools = provider.list_tools();
     
     // Should have all tools in default configuration
     assert!(tools.len() > 20);
@@ -61,7 +61,7 @@ async fn test_list_tools_readonly_config() {
     };
     let (provider, _temp_dir) = create_test_provider_with_security(config).await;
     
-    let tools = provider.list_tools().await;
+    let tools = provider.list_tools();
     let tool_names: Vec<_> = tools.iter().map(|t| &t.name).collect();
     
     // Should include readonly tools
@@ -594,7 +594,7 @@ async fn test_get_storage_info_tool() {
 #[tokio::test]
 async fn test_list_tools_includes_new_exports() {
     let (provider, _temp_dir) = create_test_provider().await;
-    let tools = provider.list_tools().await;
+    let tools = provider.list_tools();
     let names: Vec<_> = tools.iter().map(|t| t.name.clone()).collect();
     assert!(names.contains(&"export_to_markdown".to_string()));
     assert!(names.contains(&"export_to_html".to_string()));
